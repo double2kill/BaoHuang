@@ -401,9 +401,9 @@ document.getElementById("baoarea").innerHTML = "";
 		}
 		socket.emit('bao',linshichupai[0]);
 		a = chupai.indexOf(linshichupai[0]);
-		chupai[a]=null;
-		chupai[a+1]=null;
-		chupai[a+2]=null;
+		for (i in chupai){
+			chupai[i] = null;
+		}
 		chupaiN = 0;
 		gengxinpai();
 		document.getElementById("jiaowangbox").style.display = "none";
@@ -415,6 +415,7 @@ document.getElementById("baoarea").innerHTML = "";
 		if(chupaiN != 0){
 			huifu();
 		}
+		gengxinpai();
 		socket.emit('send wang');
 		document.getElementById("jiaowangbox").style.display = "none";
 		$('#baobox').hide();
