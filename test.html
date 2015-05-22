@@ -21,7 +21,8 @@ function aa2(){
 function aa3(){
 	document.getElementById('tupian3').style.top="80px";
 	document.getElementById('tupian3').style.zIndex = 1;
-	 
+	$('embed').remove();  
+	$('body').append('<embed src="Sounds/1005.ogg" autostart="true" hidden="true" loop="false">');
 }
 $(function(){ 
     $('a.button').click(function(){  
