@@ -1,0 +1,955 @@
+<!doctype html>
+<html>
+<head>
+<title>Websocket多人保皇室</title>
+<style>
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+body {
+	font: 13px Helvetica, Arial;
+}
+form {
+	padding: 3px;
+	position: fixed;
+	bottom: 5%;
+	width: 100%;
+}
+form input {
+	padding: 10px;
+	width: 30%;
+	margin-right: .5%;
+}
+form button {
+	width: 9%;
+/*	background: rgb(130, 224, 255);*/
+	border: none;
+	padding: 10px;
+}
+#messages {
+	list-style-type: none;
+	margin: 0;
+}
+#messages li {
+	padding: 5px 10px;
+}
+#messages li:nth-child(odd) {
+	background: #eee;
+}
+
+#onlineMessages{
+	font: 26px Helvetica, Arial;
+	padding: 5px 10px;
+}
+onlineMessages{
+	font: 39px Helvetica, Arial;
+}
+
+</style>
+</head>
+<body onMouseUp="clickstop()">
+<!--<div style="width:600px; height:600px; margin:50px auto;background:#DCDCDC; border:1px solid  #000;">-->
+<div id="loginbox" >
+  <div style="width:260px;margin:200px auto;">
+    <input style="width:200px;margin:0 auto;" type="text" placeholder="请输入用户名" id="username" name="username" onKeyDown="testEnter()"/>
+    <input type="button" style="width:50px;" value="提交" onclick="usernameSubmit();" />
+  </div>
+</div>
+<div id="chatbox" style="display:none">
+  <div style="background:#3d3d3d;height: 28px; width: 100%;font-size:12px;">
+    <div style="line-height: 28px;color:#fff;"> <span style="text-align:left;margin-left:10px;"> Websocket多人保皇室 </span> <span style="float:right; margin-right:10px;"> <span id="showusername" style="margin-right:20px;"></span> <a href="javascript:;" onclick="CHAT.logout()" style="color:#fff;">退出</a> </span> </div>
+  </div>
+  <div style="position:absolute;width:100%;height:100%;"></div>
+  <div id="doc">
+    <div id="chat">
+      <div id="message" class="message">
+        <div id="onlinecount" style="width:background:#EFEFF4; font-size:12px; margin-top:10px; margin-left:10px; color:#666;"></div>
+      </div>
+      <div>
+        <ul id="messages">
+        	
+            <div id="baoarea" style="position:absolute; top:80px; left:700px;">保是：<br></div>
+            <div id="chupainow" style="position:absolute; top:200px; left:250px;"></div>
+            <div id="chupaiarea">
+            </div>
+        
+<img src="images/人物.jpg" id='beimian1' style="position:absolute;top:640px;left:140px;width:120px;" />   
+<img src="images/人物.jpg" id='beimian2' style="position:absolute;top:400px;left:1200px;width:120px;" />
+<img src="images/人物.jpg" id='beimian3' style="position:absolute;top:70px;left:900px;width:120px;" />
+<img src="images/人物.jpg" id='beimian4' style="position:absolute;top:70px;left:500px;width:120px;" />
+<img src="images/人物.jpg" id='beimian5' style="position:absolute;top:400px;left:180px;width:120px;" />
+
+<div id='chupaiarea1' style="position:absolute; top:420px; left:650px; width:200px; height:150px; "></div>
+<div id='chupaiarea2' style="position:absolute; top:420px; left:990px; width:200px; height:150px; "></div>
+<div id='chupaiarea3' style="position:absolute; top:250px; left:850px; width:200px; height:150px; "></div>
+<div id='chupaiarea4' style="position:absolute; top:250px; left:450px; width:200px; height:150px; "></div>
+<div id='chupaiarea5' style="position:absolute; top:420px; left:310px; width:200px; height:150px; "></div>
+
+<div style="position:absolute; top:700px; width:160px;">
+	<div id='player1' style="position:inherit; right:40px;">玩家1</div>
+</div>
+<div id='player2' style="position:absolute; top:470px; left:1340px;">玩家2</div>
+<div id='player3' style="position:absolute; top:170px; left:1040px;">玩家3</div>
+<div id='player4' style="position:absolute; top:170px; left:640px;">玩家4</div>
+<div style="position:absolute; top:470px; width:200px;">
+	<div id='player5' style="position:inherit; right:40px;">玩家5</div>
+</div>
+
+<div id="mypaiarea" style="position:absolute; top:650px; left:270px; width:1000px; height:150px;"></div>
+
+<div style="position:absolute; top:600px;left:450px;">      
+    <input id="danibtn" type="button" style="position:inherit;left:150px; display:none;" value="大你" onClick="daniclick()">
+    <input id="chupaibtn" type="button" style="position:inherit;left:200px; display:none;" value="出牌" onClick="chupaiclick()">
+    <input id="buchubtn" type="button" style="position:inherit;left:250px; display:none;" value="不出" onClick="buchuclick()">
+    <input id="buchu_zidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="自动不出" onClick="zidongbuchuclick()">
+    <input id="btntishi" type="button" style="position:inherit;left:650px; display:block;" value="提示" onClick="tishiclick()">
+    		<input id="btntikuaidian" type="button" style="position:inherit;left:700px; display:none;" value="快点" onClick="kuaidianclick()">
+    <input id="buchu_quxiaozidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="取消自动不出" onClick="quxiaozidongbuchuclick()">
+    <input id="rebeginbtn" type="button" style="position:inherit;left:0px; display:none;" value="重新开始" onClick="rebegingame()">
+    
+</div>
+            <ul id="onlineMessages">online</ul>
+            <ul id="sysMessage"></ul>
+        </ul>
+<!--        <div id='paiimage'>
+        	<img src='images/12.jpg'>
+        </div>-->
+        <div id="jiaowangbox" style="position:absolute;top:600px;left:700px;display:none">
+            <input type="button" id="btnjiaowang" style="width:50px; " value="叫王" onclick="btnjiaowang();" />
+            <input type="button" id="btnbujiao" style="width:50px; " value="不叫" onclick="btnbujiao();" />
+            <div id="baobox" style="display:none">
+            <input type="button" id="btnjiaobao" style="width:50px;" value="叫保" onclick="jiaobao();" />
+            </div>
+        </div>
+<!--        <div style="width:400px;position:fixed;bottom: 20%;">
+          <input style="width:200px;margin:0 auto;"type="text" maxlength="140" placeholder="请输入聊天内容，按Ctrl提交" id="content" name="content">
+          <button type="button" id="mjr_send" onclick="CHAT.submit();"> 提交</button>
+          <button id="m" autocomplete="off">提交</button>
+        </div>-->
+        <form action="">
+          <input placeholder="请输入聊天内容，按Ctrl提交" id="messageSend" autocomplete="off" />
+          <button id="btnMessageSend">Send</button>
+        </form>
+      </div>  
+    </div>
+  </div>
+</div>
+
+<script src="socket.io-1.2.0.js"></script> 
+<script src="jquery-1.11.1.js"></script> 
+<script>
+var STATE_JIAOWANG = 0;
+var STATE_CHUPAI = 1;
+var STATE_DANI = 2;
+var paitishi=["王","2","1","K","Q","J","10","9","8","7","6","5","4","3"];
+var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张','八张','','',''];
+
+	var mypai = [];
+	var meiwang = 1;
+	var zhisheng3 = 0;
+	var pickclick = 0;
+	var baopai = -1;
+	var checkpai = [];
+	var lastpai = [];
+	var daniclicking = [0,0,0,0,0,0,0];
+	var playername = [];
+	var ordername = [];
+	var chupai = [];
+	var chupaiN = 0; 
+	var paihaoxinxi = [];
+	var paihaoxinxishuzi = [];
+	var chupaiid = -1;
+	var huangshangid = -1;
+	var buchu_zidong = false;
+	var myId = 0;
+	var huase=["黑桃","黑桃","黑桃","黑桃","红桃","红桃","红桃","红桃","方片","方片","方片","方片","草花","草花","草花","草花","小","大"];
+	var paishu=["1","2","3","4","5","6","7","8","9","10","J","Q","K","王"];
+	var state = STATE_JIAOWANG;
+	
+	
+	document.getElementById('username').focus();
+	function testEnter(){
+		var x=event.keyCode;
+		if(x==13){
+			usernameSubmit();
+		}
+	}
+	
+    function usernameSubmit(){
+	/*	d.getElementById("loginbox").style.display = 'none';
+		d.getElementById("chatbox").style.display = 'block';*/
+		$('#loginbox').hide();
+		$('#chatbox').show();
+		usernameInput = $('#username').val();
+		socket.emit('addin', usernameInput);
+		$('#showusername').html(  $('#username').val()+'&nbsp;' );
+		socket.emit('get all username');
+		$("#btnMessageSend").attr("disabled", true);
+	}
+	
+    var socket = io();
+	socket.io.reconnection(false);//断线重连false
+	
+    $('form').submit(function(){
+      socket.emit('chat1 message', $('#messageSend').val());
+      $('#messageSend').val('');
+	  $("#btnMessageSend").attr("disabled", true);
+      return false;
+    });
+	
+	socket.on('system message', function(sysInfo){
+      document.getElementById('sysMessage').innerHTML = '<li>' + sysInfo + '</li>';
+    });
+	socket.on('zhengzaichupai', function(name){
+      document.getElementById('chupainow').innerHTML = '<li>' + name + '</li>';
+	  someonetostring(name,'正在出牌');
+    });
+	socket.on('chatInfo', function(chatInfo){
+      $('#messages').append($('<li>').text(chatInfo));
+    });
+	socket.on('idInfo', function (userId) {
+		myId=userId
+		myUserInfo='你是'+userId
+		$('#messages').append($('<li>').text(myUserInfo));
+	})
+	
+	socket.on('chat message', function(msg){
+	  msgAndId=msg + myId
+      $('#messages').append($('<li>').text(msgAndId));
+    });
+	
+	socket.on('your pai',function(pai){
+		mypai=pai;
+		show(pai);
+		askWangGuoCheng();
+	})
+	
+	socket.on('someOneAskingWang',function(name){
+		$('#messages').append($('<li>').text(name+'叫王'));
+		someonetostring(name,'正在叫王');
+	})
+	
+	socket.on('bao',function(bao){
+		if(state != STATE_CHUPAI){
+			state = STATE_DANI;
+		}
+		var baopai = bao;
+		var zibao = 0;
+		var temp = 0;
+		var templength1 = 0;
+		document.getElementById("baoarea").innerHTML += "<img src=\"/images/" + bao + ".jpg\" id='tupianbao'  />";
+		//把保变成特殊牌
+		for(i=0;i<4;i++){
+			var a = baopai*4+i-3;
+			a=','+a+','
+			var b = mypai.indexOf(a);
+			var c = a.length-1;
+			if(b>=0){
+				zibao = zibao+1;
+				temp = b;
+				templength1 = c;
+			}
+		}	
+		if((zibao!=3)&&(zibao!=0)){
+			mypai = mypai.substring(0,temp)+mypai.substring(temp+templength1,mypai.length)+'221,';
+			huifu();
+			gengxinpai();
+		}
+		document.getElementById('buchu_zidongbtn').style.display = "block";
+	})
+	
+	socket.on('send wang',function(wang){
+		mypai = mypai +'217,';
+		gengxinpai();
+		chupaiN = 0;
+		askWangGuoCheng();
+	})
+	socket.on('it is your turn',function(){
+		$("#btnMessageSend").attr("disabled", false);
+		state = STATE_DANI;
+		if(buchu_zidong){
+			buchuclick();
+		}
+		else{
+			document.getElementById("danibtn").style.display = "block";
+			document.getElementById("buchubtn").style.display = "block";
+		}
+	});
+	socket.on('it is your begin',function(name){
+		if(mypai == ""){
+			socket.emit("nextplayerbegin");
+			document.getElementById("chupaibtn").style.display = "none";
+		}
+		else{
+			state = STATE_CHUPAI;
+			document.getElementById("chupaibtn").style.display = "block";
+			document.getElementById('buchu_zidongbtn').style.display = "none";
+		}
+	});
+	socket.on('chupainame',function(name){
+		chupaiid = ordername.indexOf(name);
+		document.getElementById("chupaiarea").innerHTML = "<div id=\"chupainame\" style=\"position:absolute; top:250px;left:300px;\">" + name + "出：" + "</div>";
+	})
+	socket.on('jieshoupai',function(x){
+		showshoudaodepai(x);
+	})
+	socket.on('useronline',function(x){
+		document.getElementById("onlineMessages").innerHTML = '在线的人:' + x;
+		playername = x;
+		setposition();
+	})
+	socket.on('buchu',function(name){
+		someonetostring(name,'不出');//第一个参数是对应哪一个人，第二个参数对应输出的文字
+	})
+	socket.on('bujiaowang',function(name){
+		someonetostring(name,'我不当王');//第一个参数是对应哪一个人，第二个参数对应输出的文字
+	})
+	socket.on('huangshangname',function(name){
+		huangshangid = ordername.indexOf(name);
+		document.getElementById("beimian" + huangshangid).src = "images/renwu6.jpg";
+	})
+	socket.on('clearchupaiarea',function(){
+		clearpingmu();
+	})
+	function clearpingmu(){
+		document.getElementById("chupaiarea1").innerHTML = "";
+		document.getElementById("chupaiarea2").innerHTML = "";
+		document.getElementById("chupaiarea3").innerHTML = "";
+		document.getElementById("chupaiarea4").innerHTML = "";
+		document.getElementById("chupaiarea5").innerHTML = "";
+	}
+	socket.on('start',function(){
+		startsetting();
+	})
+	
+	function startsetting(){
+chupai = [];
+chupaiN = 0;
+mypai = [];
+meiwang = 1;
+zhisheng3 = 0;
+pickclick = 0;
+baopai = -1;
+checkpai = [];
+lastpai = [];
+paihaoxinxi = [];
+paihaoxinxishuzi = [];
+daniclicking = [0,0,0,0,0,0,0];
+chupaiid = -1;
+huangshangid = -1;
+myId = myId;
+playername = playername;
+ordername = ordername;
+buchu_zidong = false;
+state = STATE_JIAOWANG;
+setposition();
+clearpingmu();
+
+
+document.getElementById("chupaibtn").style.display = "none";
+document.getElementById("danibtn").style.display = "none";
+document.getElementById("buchubtn").style.display = "none";
+document.getElementById("buchu_zidongbtn").style.display = "none";
+document.getElementById("buchu_quxiaozidongbtn").style.display = "none";
+document.getElementById("rebeginbtn").style.display = "none";
+document.getElementById("baoarea").innerHTML = "";
+	}
+
+	
+	function askWangGuoCheng(){
+			var testwang = 100*mypai.charAt(mypai.length-4) + 10*mypai.charAt(mypai.length-3) + 1*mypai.charAt(mypai.length-2);
+			if( testwang == 217 ){
+				havewang='你有王';
+				$('#messages').append($('<li>').text(havewang));
+				document.getElementById("jiaowangbox").style.display = "block";
+				socket.emit('someone is asking wang');
+			}
+			else{
+				nothavewang='你没王';
+				$('#messages').append($('<li>').text(nothavewang));
+			}
+<!--			b=mypai.split('wang');-->
+	}
+	
+	function btnjiaowang(){
+		//把王变成特殊牌;
+		$('#baobox').show();
+	}
+	
+	function jiaobao(){
+		var linshichupai = [];
+		var k = 0;
+		for (i=0;i<chupai.length;i++){
+			if(chupai[i] != null){
+				linshichupai[k] = chupai[i]; 
+				k++;
+			}
+		}
+		if(linshichupai.length!=3){
+			alert("请选择3张相同花色的牌作为保");return;
+		}
+		else if( (linshichupai[2]!=linshichupai[0]) ){
+			alert("请选择相同的牌");return;
+		}else if(linshichupai[1]!=linshichupai[0]){
+			alert("请选择相同的牌");return;
+		}else if(linshichupai[i]<=2){
+			alert("不能选王作为保");
+		}else if (linshichupai[i]<=6){
+			alert("不能选2作为保");
+		}
+		socket.emit('bao',linshichupai[0]);
+		a = chupai.indexOf(linshichupai[0]);
+		chupai[a]=null;
+		chupai[a+1]=null;
+		chupai[a+2]=null;
+		chupaiN = 0;
+		gengxinpai();
+		document.getElementById("jiaowangbox").style.display = "none";
+		$('#baobox').hide();
+	}
+	
+	function btnbujiao(){
+		mypai = mypai.substring(0,mypai.length-4);
+		if(chupaiN != 0){
+			huifu();
+		}
+		socket.emit('send wang');
+		document.getElementById("jiaowangbox").style.display = "none";
+		$('#baobox').hide();
+	}
+	function zhenglipai(abc){
+		var linshi = "";
+		var zhenghaodepai="";
+		for (i in abc){
+			if(abc[i]==","){ 
+				linshiN = parseInt(linshi);
+				shuziN=Math.floor(linshiN/16);
+				huaseN=linshiN%16;
+				if(shuziN==13){	//判断大小王
+					if(huaseN%2==1){
+						huaseN=16;
+					}
+					else huaseN=17;
+				}
+				zhenghaodepai += huase[huaseN] + paishu[shuziN] ;
+				linshi=""; 
+			}
+			else{ linshi+=abc[i]; };
+		}
+		return(zhenghaodepai);
+	}
+	function show(pai){
+		paihaoxinxi = [];
+		paihaoxinxishuzi = [];
+		document.getElementById("mypaiarea").innerHTML = "";
+		var linshi = "";
+		var zhenglipaiShow = [];
+		zhisheng3 = 0//zhisheng3已经是全局变量了。
+		var k = 0;
+		for(i in pai){
+			if(pai[i]==","){
+				linshiN = parseInt(linshi);
+				linshiN = Math.floor( (linshiN-1) /4) + 1;
+				linshi = "";
+				zhenglipaiShow[k] = linshiN;
+				paihaoxinxi[k] = linshiN;
+				paihaoxinxishuzi[k] = Math.floor((linshiN+1)/4);
+				if(Math.floor((linshiN+1)/4)!=13){zhisheng3++;}
+				k++;
+			}
+			else{ linshi += pai[i] }
+		}
+		for(i=0;i<zhenglipaiShow.length;i++){
+			leftpx = i*20;
+			id = 'tupian' + i;
+			document.getElementById("mypaiarea").innerHTML += "<img src=\"/images/" + zhenglipaiShow[i] + ".jpg\" id='" + id + "'  \
+			style=\"position:inherit;top:0px;left:"+ leftpx +"px;\"  \
+			onMouseOver=\"paiclick('" + id +"'," + i + ")\" onMouseDown=\"clickbegin('" + id +"'," + i + ")\" ondragstart=\"return false\" />";
+			<!--<img src="images/1.jpg" id='tupian1' style="position:absolute;top:100px;left:30px;" onMouseDown="aa1()"/>-->
+		}
+	}
+	function clickbegin(id,i){
+		pickclick=1;
+		paiclick(id,i);
+	}
+	function clickstop(){
+		pickclick=0;
+	}
+	function paiclick(id,i){
+		if(pickclick==0){
+			return;
+		}
+		if(chupaiN == 0){
+			zhinengxuanpai(i);
+		}
+		if(document.getElementById(id).style.top == "-20px"){
+			document.getElementById(id).style.top = "0px";
+			chupai[i]=null;
+			chupaiN = chupaiN - 1;
+		}
+		else if(document.getElementById(id).style.top == "0px"){
+			document.getElementById(id).style.top="-20px";
+			chupai[i] = paihaoxinxi[i];
+			chupaiN = chupaiN + 1;
+		}
+	}
+	function chupaiclick(){
+		if(chupaiN == 0){
+			alert('让你打空牌');
+			return;
+		}
+		var linshichupai = [];
+		var k = 0;
+		for (i=0;i<chupai.length;i++){
+			if(chupai[i] != null){
+				linshichupai[k] = chupai[i]; 
+				k++;
+			}
+		}
+		aaa=Math.floor((linshichupai[k-1]+1)/4);
+		while(aaa==14){
+			k=k-1;
+			aaa=Math.floor((linshichupai[k-1]+1)/4);
+		}
+		//选最后一张牌作为基准牌，如果有选择皇上需另外考虑，这里还没有考虑
+		for(i=0;i<linshichupai.length;i++){
+			bbi=Math.floor( (linshichupai[i]+1)/4 );
+			if((bbi!=aaa)&&(bbi!=14)&&(bbi!=0)){
+				alert('请出相同大小的牌');
+				return;
+			}
+		}
+		if((zhisheng3!=0)&&(aaa==13)) {
+			 alert('3要最后出');return; 
+		}
+		sendchupai(linshichupai);
+		gengxinpai();
+		chupai = [];
+		chupaiN = 0;
+		if(mypai == ""){
+			socket.emit("over");
+			zidongbuchuclick();
+			document.getElementById("rebeginbtn").style.display = "block";
+			document.getElementById("buchu_quxiaozidongbtn").style.display = "none";
+			document.getElementById("chupaibtn").style.display = "none";
+			return;
+		}
+		document.getElementById("chupaibtn").style.display = "none";
+		document.getElementById("danibtn").style.display = "none";
+		document.getElementById("buchubtn").style.display = "none";
+		document.getElementById('buchu_zidongbtn').style.display = "block";
+	}
+	function sendchupai(x){
+		socket.emit('sendchupai',x);
+	}
+	function gengxinpai(){
+		var douhaoN = 0;
+		var a="";
+		var linshi = "";
+		for(i in mypai){
+			linshi += mypai[i];
+			if(mypai[i]==","){
+				if(chupai[douhaoN] == null){
+					a += linshi;
+				}
+				douhaoN++;
+				linshi = "";
+			}
+		}
+		mypai = a;
+		show(a);
+	}
+	function showshoudaodepai(pai){
+		document.getElementById("chupaiarea"+chupaiid).innerHTML = "";
+		//出牌area清零工作已经在chupainame执行了。
+		if(chupaiid != 2){
+			for(i=0;i<pai.length;i++){
+			leftpx = i*20;
+			id = 'tupian' + i;
+			document.getElementById("chupaiarea"+chupaiid).innerHTML += "<img src=\"/images/" + pai[i] + ".jpg\" id='chupai" + id + "' style=\"position:inherit;left:"+ leftpx +"px;\" />";
+			<!--<img src="images/1.jpg" id='tupian1' style="position:absolute;top:100px;left:30px;" onMouseDown="aa1()"/>-->
+			}
+		}
+		else{
+			for(i=0;i<pai.length;i++){
+			rightpx = (pai.length-i-1)*20;
+			id = 'tupian' + i;
+			document.getElementById("chupaiarea"+chupaiid).innerHTML += "<img src=\"/images/" + pai[i] + ".jpg\" id='chupai" + id + "' style=\"position:inherit;right:"+ rightpx +"px;\" />";
+			<!--<img src="images/1.jpg" id='tupian1' style="position:absolute;top:100px;left:30px;" onMouseDown="aa1()"/>-->
+			}
+		}
+		checkchupai(pai);
+	}
+	function rebegingame(){
+		socket.emit('rebegingame');
+	}
+	function checkchupai(pai){
+		lastpai=pai;
+		checkpai=[0,0,0,0,0];
+		for(i=0;i<pai.length;i++){
+			switch(pai[i]){
+				case 1: 
+					checkpai[0] = checkpai[0] + 1;//表示大王数量
+				break;
+				case 2: 
+					checkpai[1] = checkpai[1] + 1;//表示小王数量
+				break;
+				case 55: 
+					checkpai[0] = checkpai[0] + 1;//表示大大王数量
+				break;
+				case 56: 
+					checkpai[3] = checkpai[3] + 1;//表示保数量
+				break;
+				default:
+					abc = pai[i]+1;
+					abc = Math.floor(abc/4);
+					abc = abc*4-1;
+					checkpai[4] = abc;//表示牌的大小
+					checkpai[2] = checkpai[2] + 1;//表示普通牌的数量
+			}
+		}
+	}
+	function daniclick(){
+		daniclicking = [0,0,0,0,0,0,0];
+		var check1 = checkpai.slice(0);
+		var linshichupai = [];
+		var k = 0;
+		var c = 0;
+		for (i=0;i<chupai.length;i++){
+			if(chupai[i] != null){
+				linshichupai[k] = chupai[i]; 
+				k++;
+			}
+		}
+		for(i in linshichupai){
+			switch(linshichupai[i]){
+				case 1: 
+					daniclicking[0] = daniclicking[0] + 1;//大王数量
+				break;
+				case 2: 
+					daniclicking[1] = daniclicking[1] + 1;//小王数量
+				break;
+				case 3: 
+					daniclicking[5] = daniclicking[5] + 1;//2数量
+				break;
+				case 4: 
+					daniclicking[5] = daniclicking[5] + 1;//2数量
+				break;
+				case 5: 
+					daniclicking[5] = daniclicking[5] + 1;//2数量
+				break;
+				case 6: 
+					daniclicking[5] = daniclicking[5] + 1;//2数量
+				break;
+				case 55: 
+					daniclicking[0] = daniclicking[0] + 1;//大大王数量
+				break;
+				case 56: 
+					daniclicking[3] = daniclicking[3] + 1;//保数量
+				break;
+				default:
+					abc = linshichupai[i]+1;
+					abc = Math.floor(abc/4);
+					abc = abc*4-1;
+					if(daniclicking[4] != abc){
+						c=c+1;
+					}
+					daniclicking[4] = abc;
+					daniclicking[2] = daniclicking[2] + 1;//普通牌的数量
+			}
+		}
+		if(c>1){alert("出牌有误");return;}
+		
+		
+		while(check1[3]>0){//应对保的部分
+			if(daniclicking[5]<4){
+				alert("保要用4个2打");
+				return;
+			}else{
+				daniclicking[5] = daniclicking[5]-4;
+				check1[3]=0;
+			}
+		}
+		//应对小王的部分，前提是之前已经check1已经没有保了
+		if(check1[1]>0){
+			if(daniclicking[0]>=check1[1]){
+				daniclicking[0]=daniclicking[0]-check1[1];
+				check1[1]=0;
+			}
+			else if(daniclicking[0]<check1[1]-daniclicking[3]){
+				alert("请选择足够的大王和保来打小王");return;
+			}
+			else{
+				daniclicking[0]=0;
+				daniclicking[3]=0;
+				check1[1]=0;
+			}
+		}
+	
+		//应对大王的部分，前提是check1已经没有保和小王了
+		var dadawangok = 0;
+		if( daniclicking[3] == 0 ){
+			for(i=0;i<=check1[0];i++){//寻找唯一的打大王的方式,没有保的情况下
+				j = check1[0] - i; 
+				if( (2*i <= daniclicking[0])&&(3*j <= daniclicking[5]) ){
+					if( (2*i + 3*j + check1[2]) == (daniclicking[0] + daniclicking[5] + daniclicking[2] + daniclicking[1]) ){
+/*						alert(i+'good'+j);*/
+						daniclicking[0] -= 2*i;
+						daniclicking[5] -= 3*j;
+						dadawangok = 2;
+					}
+					else{
+	/*					alert(i+'no'+j);*/
+						dadawangok = 1;
+					}
+				}
+			}
+		}else{
+			for(i=0;i<=check1[0];i++){//寻找唯一的打大王的方式，有保的情况下
+				j = check1[0]-1 - i; 
+				if( (2*i <= daniclicking[0])&&(3*j <= daniclicking[5]) ){//一、使用保
+					dadawangok++;
+					if( (2*i + 3*j + check1[2]) == (daniclicking[0] + daniclicking[5] + daniclicking[2] + daniclicking[1]) ){
+	/*					alert(i+'good1'+j);*/
+						daniclicking[0] -= 2*i;
+						daniclicking[5] -= 3*j;
+						daniclicking[3] = 0;
+						dadawangok = 2;
+						break;
+					}
+					else if( (2*i + 3*j + 2 + check1[2]) == (daniclicking[0] + daniclicking[5] + daniclicking[2] + daniclicking[1]) ){//二、不使用保
+	/*					alert(i+'good2'+j);*/
+						daniclicking[0] -= 2*i;
+						daniclicking[5] -= 3*j+3;
+						dadawangok = 2;
+						break;
+					}else{
+	/*					alert(i+'no'+j);*/
+						dadawangok = 1;				
+					}
+				}
+			}		
+		}
+		switch(dadawangok){
+			case 0:
+				alert("你出的牌不够打大王");return;
+			case 1:
+				alert("你出的牌数不对1");return;
+		}
+	
+		//检查普通牌，前提是check1已经没有大王小王和保
+		if(check1[2] == (daniclicking[0] + daniclicking[1] + daniclicking[2] + daniclicking[5] + daniclicking[3])){//检查总数相同
+			if( (daniclicking[5] != 0)&&( daniclicking[2]!=0) ){//检查2和普通牌会不会冲突，有2又有普通牌报错
+				alert("出牌有误");return;
+			}
+			else if((daniclicking[5] != 0)){//如果仍然有2，表示只有2
+				daniclicking[4] = 3;
+			}
+			if( (check1[4]!=0) && (check1[4]<=daniclicking[4]) ){//比大小
+				alert("你出的牌打不过上家");
+			}
+			else{
+				document.getElementById("chupaibtn").style.display = "none";
+				document.getElementById("danibtn").style.display = "none";
+				document.getElementById("buchubtn").style.display = "none";				
+				sendchupai(linshichupai);
+				gengxinpai();
+				chupai = [];
+				chupaiN = 0;
+			}
+		}else{
+			alert("你出的牌数不2对");
+		}
+		
+		
+	}
+	function buchuclick(){
+		if(chupaiN != 0){
+			huifu();
+		}
+		socket.emit('buchu');
+		document.getElementById("chupaibtn").style.display = "none";
+		document.getElementById("danibtn").style.display = "none";
+		document.getElementById("buchubtn").style.display = "none";
+	}
+	function setposition(){
+		myorder = playername.indexOf(myId);
+		for (i in playername){
+			if(i < myorder){
+				ordertemp = i - myorder + 6;
+				ordername[ordertemp] = playername [i]; 
+				document.getElementById('player' + ordertemp).innerHTML = ordername[ordertemp];
+			}else{
+				ordertemp = i - myorder + 1;
+				ordername[ordertemp] = playername [i];
+				document.getElementById('player' + ordertemp).innerHTML = ordername[ordertemp];
+			}
+			var tempi = Number(i) + 1;
+			document.getElementById('beimian' + ordertemp).src = "images/renwu" + tempi + ".jpg";
+			document.getElementById('beimian' + ordertemp).style.width = "120px";
+		}
+	}
+	function zidongbuchuclick(){
+		if(document.getElementById("buchubtn").style.display == "block"){
+			buchuclick();
+		}
+		buchu_zidong = true;
+		document.getElementById('buchu_zidongbtn').style.display = "none";
+		document.getElementById('buchu_quxiaozidongbtn').style.display = "block";
+	}
+	function quxiaozidongbuchuclick(){
+		buchu_zidong = false;
+		document.getElementById('buchu_zidongbtn').style.display = "block";
+		document.getElementById('buchu_quxiaozidongbtn').style.display = "none";
+	}
+	function someonetostring(name,text){
+		chupaiid = ordername.indexOf(name);
+		switch (chupaiid){
+			case -1: return;
+			case 1:
+				htmltemp = "<div id='textbuchu1' style='position:inherit;top:150px;left:30px'><h1>" + text + "</h1></div>";
+				break;	
+			case 2:
+				htmltemp = "<div id='textbuchu1' style='position:inherit;top:50px;right:10px'><h1>" + text + "</h1></div>";
+				break;
+			case 3:
+				htmltemp = "<div id='textbuchu1' style='position:inherit;top:0px;left:90px;'><h1>" + text + "</h1></div>";
+				break;
+			case 4:
+				htmltemp = "<div id='textbuchu1' style='position:inherit;top:0px;left:90px;'><h1>" + text + "</h1></div>";
+				break;
+			case 5:
+				htmltemp = "<div id='textbuchu1' style='position:inherit;top:50px;left:0px;'><h1>" + text + "</h1></div>";
+				break;
+		}
+		if((chupaiid>=1)&&(chupaiid<=5)){
+		document.getElementById("chupaiarea" + chupaiid).innerHTML = htmltemp;
+		}
+	}
+	function zhinengxuanpai(i){
+		chupaiN=chupaiN+1;
+		if(huangshangid == -1){
+			for(k = i - 1; (paihaoxinxi[k] == paihaoxinxi[i]) ; k--){
+				idk = 'tupian' + k;
+				paiclick(idk,k);
+			}
+			for(k = i + 1; (paihaoxinxi[k] == paihaoxinxi[i])&&(k<paihaoxinxi.length); k++){
+				idk = 'tupian' + k;
+				paiclick(idk,k);
+			}
+		}else{
+			var shuliang = 0;
+			if(state == STATE_DANI){
+				shuliang = checkpai[2];
+			}
+			else{
+				shuliang = 16;
+			}
+			for(k = i - 1; paihaoxinxishuzi[k] == paihaoxinxishuzi[i] ; k--){
+				if(chupaiN<shuliang){
+					idk = 'tupian' + k;
+					paiclick(idk,k);
+				}else{break;}
+			}
+			for(k = i + 1; (paihaoxinxishuzi[k] == paihaoxinxishuzi[i])&&(k < paihaoxinxi.length); k++){
+				if(chupaiN<shuliang){
+					idk = 'tupian' + k;
+					paiclick(idk,k);
+				}else{break;}
+			}
+		}
+		chupaiN = chupaiN-1;
+	}
+	var tishi = 0;
+	var tishionly = 0;
+	function tishiclick(){
+		var n = 0;
+		var temp = 0;
+		var kechu = new Array;
+		huifu();
+		if(state == STATE_CHUPAI){
+			alert("请出牌");
+			return;
+		}
+		else if(state == STATE_DANI){
+			for(ii = paihaoxinxishuzi.length - 1;paihaoxinxi[ii]>2;ii--){
+				if((paihaoxinxishuzi[ii] < Math.floor((checkpai[4]+1)/4))&&(paihaoxinxishuzi[ii] == paihaoxinxishuzi[ii - checkpai[2] + 1])){
+					kechu[temp] = paitishi[paihaoxinxishuzi[ii]];
+					temp++;
+					if((paihaoxinxishuzi[ii] != paihaoxinxishuzi[ii - checkpai[2]]) && (paihaoxinxishuzi[ii] != paihaoxinxishuzi[ii + 1]) ){
+						if(n==tishi){
+							idii = 'tupian' + ii;
+							pickclick=1;
+							paiclick(idii,ii);
+							pickclick=0;	
+							tishi = tishi + 1;
+							return;
+						}
+						n = n + 1;
+					}
+					a = paihaoxinxishuzi.indexOf(paihaoxinxishuzi[ii]);
+					ii = a; 
+				}
+			}
+		}
+	else if (state == STATE_JIAOWANG){
+		for(ii = paihaoxinxi.length-1;paihaoxinxi[ii]>=11;ii--){
+			if(paihaoxinxi[ii]==paihaoxinxi[ii-1]&&paihaoxinxi[ii-1]==paihaoxinxi[ii-2]){
+				if(n==tishi){
+					idii = 'tupian' + ii;
+					pickclick=1;
+					paiclick(idii,ii);
+					pickclick=0;	
+					tishi = tishi + 1;
+					return;
+				}
+				if(paihaoxinxi[ii-2]==paihaoxinxi[ii-3]){//如果可以自保的话，会选起四张，找的时候会找两边，所以如果是自保的话，就把ii-1
+					ii = ii - 1;
+				}else{
+					n = n + 1;
+				}
+			}
+		}
+	}
+		if(tishi == 0){
+			if(temp == 0){
+				if(state == STATE_JIAOWANG){
+					alert('你没有');
+				}
+				else{
+					alert('不出');
+				}
+			}
+			else{
+				alert(shuzitishi[ checkpai[2]-1 ]  + '的牌你没有，可以打'+kechu.reverse());
+			}
+		}else{
+			tishi = 0;
+			tishiclick();
+		}
+	}
+	function huifu(){
+		for(ik in chupai){
+			if(chupai[ik]!=null){
+				idik = 'tupian' + ik;
+				pickclick=1;
+				paiclick(idik,ik);
+				pickclick=0;
+			}
+		}
+	}
+	function kuaidianclick(){
+		$('embed').remove();  
+		$('body').append('<embed src="Sounds/1005.ogg" autostart="true" hidden="true" loop="false">');
+	}
+/*	socket.on('connect', function () {
+		socket.emit('addin', function () {
+		})
+	})*/
+	
+   </script>
+<!--</div>-->
+</body>
+</html>

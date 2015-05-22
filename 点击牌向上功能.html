@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html"; charset="utf-8">
+<title>test</title>
+</head>
+<body onload="scroll(0,document.body.scrollHeight) "> <!--自动让滚动条到达最底端-->
+<input type="button" style="position:absolute; top:60px; left:200px" onClick="show()" value="show">
+<div id="area"></div>
+<p>输出结果：</p>
+<p id="output"></p>
+<br>
+<input type="button" style="position:absolute; top:120px; left:200px" onClick="btn()" value="出牌">
+<script language="javascript">
+function show(){
+	for (i=1;i<=7;i++){
+		leftpx = 10 + i*20;
+		id = 'tupian' + i;
+		document.getElementById("area").innerHTML += "<img src=\"images/" + i + ".jpg\" id='" + id + "' style=\"position:absolute;top:100px;left:"+ leftpx +"px;\" onMouseDown=\"aa('" + id +"'," + i + ")\" />";
+		<!--<img src="images/1.jpg" id='tupian1' style="position:absolute;top:100px;left:30px;" onMouseDown="aa1()"/>-->
+	}
+}
+var chupai = new Array();
+var duiyingpai = [,"大王","小王","3","4","5","6","7","8","9","10",""];
+function aa(x,i){
+	if(chupai[i] != null){
+		document.getElementById(x).style.top = "100px";
+		chupai[i]=null;
+	}
+	else{
+		document.getElementById(x).style.top="80px";
+		chupai[i]=duiyingpai[i];
+	}
+}
+function btn(){
+	var chupaishuju = "";
+	for(i in chupai){
+		if(chupai[i] != null){
+			chupaishuju += chupai[i];
+		}
+	}
+	document.getElementById('output').innerHTML = chupaishuju;
+}
+</script>
+</body>
+</html>

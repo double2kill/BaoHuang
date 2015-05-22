@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html"; charset="utf-8">
+<title>test</title>
+</head>
+<body onload="scroll(0,document.body.scrollHeight) "> <!--自动让滚动条到达最底端-->
+
+<img src="images/背面.jpg" id='tupian2' style="position:absolute;top:400px;left:1200px;" />
+<img src="images/背面.jpg" id='tupian3' style="position:absolute;top:90px;left:900px;" />
+<img src="images/背面.jpg" id='tupian4' style="position:absolute;top:90px;left:500px;" />
+<img src="images/背面.jpg" id='tupian5' style="position:absolute;top:400px;left:250px;" />
+
+
+<div id='chupai1' style="position:absolute; top:480px; left:660px; width:200px; height:150px; border:1px solid #000000;"></div>
+<div id='chupai2' style="position:absolute; top:420px; left:990px; width:200px; height:150px; border:1px solid #000000;"></div>
+<div id='chupai3' style="position:absolute; top:250px; left:850px; width:200px; height:150px; border:1px solid #000000;"></div>
+<div id='chupai4' style="position:absolute; top:250px; left:450px; width:200px; height:150px; border:1px solid #000000;"></div>
+<div id='chupai5' style="position:absolute; top:420px; left:360px; width:200px; height:150px; border:1px solid #000000;"></div>
+
+<div id='name1' style="position:absolute; top:820px; left:700px;">player1</div>
+<div id='name2' style="position:absolute; top:470px; left:1320px;">player2</div>
+<div id='name3' style="position:absolute; top:170px; left:1020px;">player3</div>
+<div id='name4' style="position:absolute; top:170px; left:620px;">player4</div>
+<div id='name5' style="position:absolute; top:470px; left:180px;">player5</div>
+
+<div style=" position:absolute; top:640px; left:390px; width:770px; height:170px; border:1px solid #000000;"></div>
+<img src="images/1.jpg" id='tupian1' style="position:absolute;top:650px;left:400px;" onMouseDown="aa1()"/>
+<img src="images/2.jpg" id='tupian2' style="position:absolute;top:650px;left:420px;" onMouseDown="aa2()"/>
+<img src="images/3.jpg" id='tupian3' style="position:absolute;top:650px;left:1000px;" onMouseDown="aa3()"/>
+<script language="javascript">
+function aa1(){
+	document.getElementById('tupian1').style.top="80px";
+	document.getElementById('tupian1').style.zIndex = 1;
+}
+function aa2(){
+	document.getElementById('tupian2').style.top="80px";
+	document.getElementById('tupian2').style.zIndex = 1;
+}
+function aa3(){
+	document.getElementById('tupian3').style.top="80px";
+	document.getElementById('tupian3').style.zIndex = 1;
+}
+document.getElementById("chupai"+1).innerHTML += "<img src=\"images/1.jpg\" style=\"position:inherit;left:0px;\" />";
+document.getElementById("chupai"+1).innerHTML += "<img src=\"images/2.jpg\" style=\"position:inherit;right:20px;\" />";
+</script>
+</body>
+</html>

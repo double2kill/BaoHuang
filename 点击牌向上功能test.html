@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html"; charset="utf-8">
+<title>test</title>
+</head>
+<body onload="scroll(0,document.body.scrollHeight) "> <!--自动让滚动条到达最底端-->
+<img src="images/1.jpg" id='tupian1' style="position:absolute;top:100px;left:30px;"/>
+<img src="images/2.jpg" id='tupian2' style="position:absolute;top:100px;left:50px;" onMouseDown="aa2()"/>
+<img src="images/3.jpg" id='tupian3' style="position:absolute;top:100px;left:70px" onMouseDown="aa3()"/>
+<p>输出结果：</p>
+<p id="output"></p>
+<br>
+<input type="button" style="position:absolute; top:120px; left:200px" onClick="btn()" value="出牌">
+<script language="javascript">
+var chupai = new Array();
+var abc=document.getElementById('tupian1');
+abc.onmousedown = function(){
+	document.getElementById('tupian1').style.top="80px";
+	document.getElementById('tupian1').removeChild(this);
+}
+
+function aa1(){
+	if(document.getElementById('tupian1').style.zIndex == 1){
+		document.getElementById('tupian1').style.top = "100px";
+		document.getElementById('tupian1').style.zIndex = 0;
+		chupai[1]=0;
+	}
+	else{
+	document.getElementById('tupian1').style.top="80px";
+	document.getElementById('tupian1').style.zIndex = 1;//返回的时候要加功能要把zindex返回0		
+	chupai[1]="大王";
+	}
+}
+function aa2(){
+	if(document.getElementById('tupian2').style.zIndex == 1){
+		document.getElementById('tupian2').style.top = "100px";
+		document.getElementById('tupian2').style.zIndex = 0;
+		chupai[2]=0;
+	}
+	else{
+	document.getElementById('tupian2').style.top="80px";
+	document.getElementById('tupian2').style.zIndex = 1;//返回的时候要加功能要把zindex返回0		
+	chupai[2]="小王";
+	}
+}
+function aa3(){
+	if(document.getElementById('tupian3').style.zIndex == 1){
+		document.getElementById('tupian3').style.top = "100px";
+		document.getElementById('tupian3').style.zIndex = 0;
+		chupai[3]=0;
+	}
+	else{	
+	document.getElementById('tupian3').style.top="80px";
+	document.getElementById('tupian3').style.zIndex = 1;
+	chupai[3]=3;
+	}
+}
+function btn(){
+	var chupaishuju = "";
+	for(i in chupai){
+		if(chupai[i] != 0){
+			chupaishuju += chupai[i];
+		}
+	}
+	document.getElementById('output').innerHTML = chupaishuju;
+}
+</script>
+</body>
+</html>

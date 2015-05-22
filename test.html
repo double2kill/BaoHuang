@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html"; charset="utf-8">
+<title>test</title>
+</head>
+<body onload="scroll(0,document.body.scrollHeight) "> <!--自动让滚动条到达最底端-->
+<img src="images/1.jpg" id='tupian1' style="position:relative;top:100px;left:180px;" onMouseDown="aa1()"/>
+<img src="images/2.jpg" id='tupian2' style="position:relative;top:100px;left:90px;" onMouseDown="aa2()"/>
+<img src="images/3.jpg" id='tupian3' style="position:relative;top:100px;" onMouseDown="aa3()"/>
+<script src="jquery-1.11.1.js"></script>
+<script language="javascript">
+function aa1(){
+	document.getElementById('tupian1').style.top="80px";
+	document.getElementById('tupian1').style.zIndex = 1;
+}
+function aa2(){
+	document.getElementById('tupian2').style.top="80px";
+	document.getElementById('tupian2').style.zIndex = 1;
+}
+function aa3(){
+	document.getElementById('tupian3').style.top="80px";
+	document.getElementById('tupian3').style.zIndex = 1;
+	 
+}
+$(function(){ 
+    $('a.button').click(function(){  
+         
+         
+    }); 
+});
+</script>
+</body>
+</html>
