@@ -105,7 +105,7 @@ onlineMessages{
     <input id="buchubtn" type="button" style="position:inherit;left:250px; display:none;" value="不出" onClick="buchuclick()">
     <input id="buchu_zidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="自动不出" onClick="zidongbuchuclick()">
     <input id="btntishi" type="button" style="position:inherit;left:650px; display:block;" value="提示" onClick="tishiclick()">
-    		<input id="btntikuaidian" type="button" style="position:inherit;left:700px; display:none;" value="快点" onClick="kuaidianclick()">
+    		<input id="btntikuaidian" type="button" style="position:inherit;left:700px; display:block;" value="快点" onClick="kuaidianclick()">
     <input id="buchu_quxiaozidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="取消自动不出" onClick="quxiaozidongbuchuclick()">
     <input id="rebeginbtn" type="button" style="position:inherit;left:0px; display:none;" value="重新开始" onClick="rebegingame()">
     
@@ -262,6 +262,7 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	
 	socket.on('send wang',function(wang){
 		mypai = mypai +'217,';
+		chupai = [];
 		gengxinpai();
 		chupaiN = 0;
 		askWangGuoCheng();
@@ -322,6 +323,10 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	}
 	socket.on('start',function(){
 		startsetting();
+	})
+	socket.on('voice',function(soundname){
+		$('embed').remove();  
+		$('body').append('<embed src="Sounds/'+ soundname + '" autostart="true" hidden="true" loop="false">');
 	})
 	
 	function startsetting(){
@@ -417,6 +422,7 @@ document.getElementById("baoarea").innerHTML = "";
 		}
 		gengxinpai();
 		socket.emit('send wang');
+		socket.emit('voice','bujiao.wav');
 		document.getElementById("jiaowangbox").style.display = "none";
 		$('#baobox').hide();
 	}
@@ -756,6 +762,8 @@ document.getElementById("baoarea").innerHTML = "";
 				document.getElementById("danibtn").style.display = "none";
 				document.getElementById("buchubtn").style.display = "none";				
 				sendchupai(linshichupai);
+		var rand = Math.floor(Math.random()*3)+1;
+		socket.emit('voice','dani'+ rand +'.wav');
 				gengxinpai();
 				chupai = [];
 				chupaiN = 0;
@@ -771,6 +779,8 @@ document.getElementById("baoarea").innerHTML = "";
 			huifu();
 		}
 		socket.emit('buchu');
+		var rand = Math.floor(Math.random()*4)+1;
+		socket.emit('voice','buyao'+ rand +'.wav');
 		document.getElementById("chupaibtn").style.display = "none";
 		document.getElementById("danibtn").style.display = "none";
 		document.getElementById("buchubtn").style.display = "none";
@@ -942,8 +952,7 @@ document.getElementById("baoarea").innerHTML = "";
 		}
 	}
 	function kuaidianclick(){
-		$('embed').remove();  
-		$('body').append('<embed src="Sounds/1005.ogg" autostart="true" hidden="true" loop="false">');
+		socket.emit('voice','kuaidian.ogg');
 	}
 /*	socket.on('connect', function () {
 		socket.emit('addin', function () {

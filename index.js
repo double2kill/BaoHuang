@@ -113,6 +113,9 @@ io.on('connection',function(socket){
 		io.emit('zhengzaichupai','轮到'+ username[nextPlayerId[socket.id]]+'出牌');
 		buchu = 0;
 	});
+	socket.on('voice',function(soundname){
+		io.emit('voice', soundname);
+	});
 	socket.on('disconnect',function(){
 		this.broadcast.emit('system message', username[socket.id] + ' 退出了游戏' );
 		console.log(username[socket.id] + ' has disconnected');
