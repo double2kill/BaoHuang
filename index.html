@@ -57,6 +57,13 @@ onlineMessages{
     <input type="button" style="width:50px;" value="提交" onclick="usernameSubmit();" />
   </div>
 </div>
+<div id="seatbox" style="position:absolute;top:350px;left:600px;display:none;">
+	<input id="seat1" type="button" style="position:inherit;width:50px;height:50px;" value="seat1" onclick="sendseat(1)" />
+    <input id="seat2" type="button" style="position:inherit;top:100px;width:50px;height:50px;" value="seat2" onclick="sendseat(2)" />
+    <input id="seat3" type="button" style="position:inherit;top:200px;left:100px;width:50px;height:50px;" value="seat3" onclick="sendseat(3)" />
+    <input id="seat4" type="button" style="position:inherit;top:100px;left:200px;width:50px;height:50px;" value="seat4" onclick="sendseat(4)" />
+    <input id="seat5" type="button" style="position:inherit;top:0px;left:200px;width:50px;height:50px;" value="seat5" onclick="sendseat(5)" />
+</div>
 <div id="chatbox" style="display:none">
   <div style="background:#3d3d3d;height: 28px; width: 100%;font-size:12px;">
     <div style="line-height: 28px;color:#fff;"> <span style="text-align:left;margin-left:10px;"> Websocket多人保皇室 </span> <span style="float:right; margin-right:10px;"> <span id="showusername" style="margin-right:20px;"></span> <a href="javascript:;" onclick="CHAT.logout()" style="color:#fff;">退出</a> </span> </div>
@@ -106,6 +113,8 @@ onlineMessages{
     <input id="buchu_zidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="自动不出" onClick="zidongbuchuclick()">
     <input id="btntishi" type="button" style="position:inherit;left:650px; display:block;" value="提示" onClick="tishiclick()">
     		<input id="btntikuaidian" type="button" style="position:inherit;left:700px; display:block;" value="快点" onClick="kuaidianclick()">
+            <input id="btnnocan" type="button" style="position:inherit;left:750px; display:block;" value="nocan" onClick="nocanclick()">
+            <input id="btnyouup" type="button" style="position:inherit;left:800px; display:block;" value="youup" onClick="youupclick()">
     <input id="buchu_quxiaozidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="取消自动不出" onClick="quxiaozidongbuchuclick()">
     <input id="rebeginbtn" type="button" style="position:inherit;left:0px; display:none;" value="重新开始" onClick="rebegingame()">
     
@@ -181,15 +190,31 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	/*	d.getElementById("loginbox").style.display = 'none';
 		d.getElementById("chatbox").style.display = 'block';*/
 		$('#loginbox').hide();
-		$('#chatbox').show();
+		$('#seatbox').show();
 		usernameInput = $('#username').val();
 		socket.emit('addin', usernameInput);
 		$('#showusername').html(  $('#username').val()+'&nbsp;' );
 		socket.emit('get all username');
+		
+		socket.emit('get all seats');
+	}
+	function sendseat(i){
+		socket.emit("seat",i);
+		document.getElementById("seat"+i).disabled = true;
+		//$('#seatbox').hide();
+		//$('#chatbox').show();
 		$("#btnMessageSend").attr("disabled", true);
 	}
+	var socket = io();
+	socket.on('send all seats', function(seat){
+		for (i=0; i<seat.length;i++){
+			if(seat[i] != null){
+				document.getElementById("seat"+i).disabled = true;
+				document.getElementById("seat"+i).value = seat[i];
+			}
+		}
+    });
 	
-    var socket = io();
 	socket.io.reconnection(false);//断线重连false
 	
     $('form').submit(function(){
@@ -954,6 +979,13 @@ document.getElementById("baoarea").innerHTML = "";
 	function kuaidianclick(){
 		socket.emit('voice','kuaidian.ogg');
 	}
+	function nocanclick(){
+		socket.emit('voice','nocan.ogg');
+	}
+	function youupclick(){
+		socket.emit('voice','youup.ogg');
+	}
+
 /*	socket.on('connect', function () {
 		socket.emit('addin', function () {
 		})

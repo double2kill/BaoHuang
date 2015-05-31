@@ -15,7 +15,7 @@ var shunxugetid = new Array();
 var renshu = 0;
 var huangshangid = 0;
 var buchu = 0;
-
+var seat = new Array();
 
 onlineNum=0;
 
@@ -115,6 +115,14 @@ io.on('connection',function(socket){
 	});
 	socket.on('voice',function(soundname){
 		io.emit('voice', soundname);
+	});
+	socket.on('seat',function(seatid){
+		seat[seatid] = username[socket.id];
+		console.log(seat[seatid]+":"+seatid);
+		io.emit("send all seats",seat);
+	});
+	socket.on('get all seats',function(){
+		socket.emit("send all seats",seat);
 	});
 	socket.on('disconnect',function(){
 		this.broadcast.emit('system message', username[socket.id] + ' 退出了游戏' );
