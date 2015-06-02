@@ -17,6 +17,7 @@ var huangshangid = 0;
 var buchu = 0;
 var seat = new Array();
 var onlineuser = [];
+var gongpainame = [];
 
 var gameNum=0;
 
@@ -129,6 +130,16 @@ io.on('connection',function(socket){
 	});
 	socket.on('get all seats',function(){
 		socket.emit("send all seats",seat);
+	});
+	socket.on('gong2',function(msg){
+		io.emit('chupainame',username[socket.id]);//发送供牌username
+		io.emit('gong2jieshoupai',msg);
+		gongpainame.push(username[socket.id]);
+	});
+	socket.on('shou2',function(){
+		var shou2name = gongpainame.pop();
+		io.emit('beishoupainame',shou2name);//发送供牌username
+		io.emit('shou2jieshoupai',username[socket.id]);
 	});
 	socket.on('disconnect',function(){
 		this.broadcast.emit('system message', username[socket.id] + ' 退出了游戏' );

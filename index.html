@@ -115,6 +115,8 @@ onlineMessages{
     		<input id="btntikuaidian" type="button" style="position:inherit;left:700px; display:block;" value="快点" onClick="kuaidianclick()">
             <input id="btnnocan" type="button" style="position:inherit;left:750px; display:block;" value="nocan" onClick="nocanclick()">
             <input id="btnyouup" type="button" style="position:inherit;left:800px; display:block;" value="youup" onClick="youupclick()">
+<input id="btnshou2" type="button" style="position:inherit;left:200px; display:block;" value="供牌" onClick="gong2click()">
+<input id="btngong2" type="button" style="position:inherit;left:150px; display:block;" value="收牌" onClick="shou2click()">
     <input id="buchu_quxiaozidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="取消自动不出" onClick="quxiaozidongbuchuclick()">
     <input id="rebeginbtn" type="button" style="position:inherit;left:0px; display:none;" value="重新开始" onClick="rebegingame()">
     
@@ -178,6 +180,8 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	var state = STATE_JIAOWANG;
 	var socket = io();
 	var onlinename = [];
+	var beishouname = "";
+	var gongshoupai = new Array();
 	socket.emit('get all username');
 	
 	document.getElementById('username').focus();
@@ -331,6 +335,21 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	socket.on('jieshoupai',function(x){
 		showshoudaodepai(x);
 	})
+	socket.on('gong2jieshoupai',function(x){
+		showshoudaodepai(x);
+		gongshoupai.push(x);
+	})
+	socket.on('shou2jieshoupai',function(name){
+		if(name!=myId){
+			gongshoupai.pop();
+		}
+		someonetostring(name,'收'+beishouname+'的牌');
+		beishouname = "";
+	})
+	socket.on('beishoupainame',function(name){
+		someonetostring(name,'');
+		beishouname = name;
+	})
 	socket.on('useronline',function(x){
 		document.getElementById("onlineMessages").innerHTML = '在线的人:' + x;
 		onlinename = x;
@@ -383,6 +402,7 @@ playername = playername;
 ordername = ordername;
 buchu_zidong = false;
 state = STATE_JIAOWANG;
+gongshoupai = new Array();
 setposition();
 clearpingmu();
 
@@ -998,7 +1018,56 @@ document.getElementById("baoarea").innerHTML = "";
 		socket.emit('addin', function () {
 		})
 	})*/
-	
+	function gong2click(){
+		var linshichupai = [];
+		var k = 0;
+		for (i=0;i<chupai.length;i++){
+			if(chupai[i] != null){
+				linshichupai[k] = chupai[i]; 
+				k++;
+			}
+		}
+		if(chupaiN == 0){
+			alert("请供牌");
+			return;
+		}
+		socket.emit('gong2',linshichupai);
+		gengxinpai();
+		chupai = [];
+		chupaiN = 0;
+	}
+	function shou2click(){
+		shoude2 = gongshoupai.pop();
+		if(!shoude2){
+			alert("没牌");
+			return;
+		}
+		addpai(shoude2);
+		socket.emit('shou2');
+	}
+	function addpai(pai){
+		for (i in pai){
+			a = pai[i];
+			for(k=0;k<paihaoxinxi.length;k++){
+				if(paihaoxinxi[k]>pai[i]){
+					break;
+				}
+			}
+			douhaoN = 0;
+			for(j=0;j<mypai.length;j++){
+				if(mypai[j]==","){
+					douhaoN++;
+					if(douhaoN>=k){
+						left = mypai.substring(0,j+1);
+						right = mypai.substring(j+1,mypai.length);
+						mypai = left + 4*pai[i] + "," + right;
+						break;
+					}
+				}
+			}
+			gengxinpai();
+		}
+	}
    </script>
 <!--</div>-->
 </body>
