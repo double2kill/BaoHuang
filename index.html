@@ -176,7 +176,9 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	var huase=["黑桃","黑桃","黑桃","黑桃","红桃","红桃","红桃","红桃","方片","方片","方片","方片","草花","草花","草花","草花","小","大"];
 	var paishu=["1","2","3","4","5","6","7","8","9","10","J","Q","K","王"];
 	var state = STATE_JIAOWANG;
-	
+	var socket = io();
+	var onlinename = [];
+	socket.emit('get all username');
 	
 	document.getElementById('username').focus();
 	function testEnter(){
@@ -189,29 +191,37 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
     function usernameSubmit(){
 	/*	d.getElementById("loginbox").style.display = 'none';
 		d.getElementById("chatbox").style.display = 'block';*/
+		usernameInput = $('#username').val();
+		if(onlinename.indexOf(usernameInput)!=-1){
+			alert("该用户名已经存在");//检测用户名是否存在
+			return;
+			//在socket.on('useronline'添加一个online变量。不然让服务器检查也可以。
+		}
+
 		$('#loginbox').hide();
 		$('#seatbox').show();
-		usernameInput = $('#username').val();
 		socket.emit('addin', usernameInput);
 		$('#showusername').html(  $('#username').val()+'&nbsp;' );
-		socket.emit('get all username');
-		
 		socket.emit('get all seats');
 	}
 	function sendseat(i){
 		socket.emit("seat",i);
 		document.getElementById("seat"+i).disabled = true;
-		//$('#seatbox').hide();
-		//$('#chatbox').show();
+		$('#seatbox').hide();
+		$('#chatbox').show();
 		$("#btnMessageSend").attr("disabled", true);
 	}
-	var socket = io();
+
 	socket.on('send all seats', function(seat){
 		for (i=0; i<seat.length;i++){
 			if(seat[i] != null){
 				document.getElementById("seat"+i).disabled = true;
 				document.getElementById("seat"+i).value = seat[i];
 			}
+		}
+		playername = seat;
+		if(playername.indexOf(myId)!=-1){
+			setposition();
 		}
     });
 	
@@ -323,8 +333,7 @@ var shuzitishi = ['单张','一对','三张','四张','五张','六张','七张'
 	})
 	socket.on('useronline',function(x){
 		document.getElementById("onlineMessages").innerHTML = '在线的人:' + x;
-		playername = x;
-		setposition();
+		onlinename = x;
 	})
 	socket.on('buchu',function(name){
 		someonetostring(name,'不出');//第一个参数是对应哪一个人，第二个参数对应输出的文字
@@ -812,19 +821,18 @@ document.getElementById("baoarea").innerHTML = "";
 	}
 	function setposition(){
 		myorder = playername.indexOf(myId);
-		for (i in playername){
-			if(i < myorder){
-				ordertemp = i - myorder + 6;
+		for (i=0;i<=playername.length;i++){
+			if(playername[i] != null){
+				if(i - myorder < 0){
+					ordertemp = i - myorder + 1 + 5;
+				}else{
+					ordertemp = i - myorder + 1;
+				}
 				ordername[ordertemp] = playername [i]; 
 				document.getElementById('player' + ordertemp).innerHTML = ordername[ordertemp];
-			}else{
-				ordertemp = i - myorder + 1;
-				ordername[ordertemp] = playername [i];
-				document.getElementById('player' + ordertemp).innerHTML = ordername[ordertemp];
+				document.getElementById('beimian' + ordertemp).src = "images/renwu" + i + ".jpg";
+				document.getElementById('beimian' + ordertemp).style.width = "120px";
 			}
-			var tempi = Number(i) + 1;
-			document.getElementById('beimian' + ordertemp).src = "images/renwu" + tempi + ".jpg";
-			document.getElementById('beimian' + ordertemp).style.width = "120px";
 		}
 	}
 	function zidongbuchuclick(){

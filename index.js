@@ -16,8 +16,9 @@ var renshu = 0;
 var huangshangid = 0;
 var buchu = 0;
 var seat = new Array();
+var onlineuser = [];
 
-onlineNum=0;
+var gameNum=0;
 
 app.get('',function(req,res){
 	res.sendFile(__dirname + '/index.html');
@@ -39,22 +40,13 @@ io.on('connection',function(socket){
 		userlist[userId].socket.emit('idInfo',username[userId]);	
 		io.emit('system message',username[userId]+'进入了游戏');
 		console.log('User ' + username[userId] + ' has connected!');
+		onlineuser.push(username[userId]);
+		io.emit('useronline',onlineuser);
+		console.log('online: ' + onlineuser);
 	});
 	
 	socket.on('get all username',function(){
-		onlineNum++;
-		var allId=[];
-		for(everyId in username){
-			allId.push(username[everyId]);
-		}
-		console.log('online: ' + allId);
-		io.emit('useronline',allId);
-		console.log(allId);
-		
-		renShu=5;
-		if (onlineNum == renShu){
-			begin();
-		}
+		io.emit('useronline',onlineuser);
 	});
 	
 	socket.on('someone is asking wang',function(){
@@ -118,8 +110,22 @@ io.on('connection',function(socket){
 	});
 	socket.on('seat',function(seatid){
 		seat[seatid] = username[socket.id];
-		console.log(seat[seatid]+":"+seatid);
 		io.emit("send all seats",seat);
+		
+		gamename = [];
+		gameNum = 0;
+		for(i in seat){
+			if(seat[i]!=null){
+				gamename.push(seat[i]);
+				gameNum++;
+			}
+		}
+		console.log("gameing: " + gamename);
+		console.log(gameNum);
+		renShu=5;
+		if (gameNum == renShu){
+			begin();
+		}
 	});
 	socket.on('get all seats',function(){
 		socket.emit("send all seats",seat);
@@ -127,6 +133,9 @@ io.on('connection',function(socket){
 	socket.on('disconnect',function(){
 		this.broadcast.emit('system message', username[socket.id] + ' 退出了游戏' );
 		console.log(username[socket.id] + ' has disconnected');
+		onlineuser.splice(onlineuser.indexOf(username[socket.id]),1);
+		io.emit('useronline',onlineuser);
+		console.log('online: ' + onlineuser);
 	});
 	 
 });
