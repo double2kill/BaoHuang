@@ -18,6 +18,7 @@ var buchu = 0;
 var seat = new Array();
 var onlineuser = [];
 var gongpainame = [];
+var chongname = false;
 
 var gameNum=0;
 
@@ -73,6 +74,11 @@ io.on('connection',function(socket){
 	    console.log('message: ' + msg);
 	  });
 	 socket.on('sendchupai',function(msg){
+			if(chongname){
+				console.log(chongname+"chong:false");
+				io.emit('beina',chongname);
+				chongname = false;
+			}
 		buchu = 0;
 		io.emit('chupainame',username[socket.id]);
 		io.emit('jieshoupai',msg);
@@ -99,11 +105,12 @@ io.on('connection',function(socket){
 		}
 	});
 	socket.on('over',function(){
+		io.emit('eversomeone',username[socket.id]);
 		console.log(username[socket.id]+'is over');
 	});
 	socket.on('nextplayerbegin',function(){
 		userlist[ nextPlayerId[socket.id] ].socket.emit('it is your begin',username[socket.id]);
-		io.emit('zhengzaichupai','轮到'+ username[nextPlayerId[socket.id]]+'出牌');
+		io.emit('zhengzaichupai',username[nextPlayerId[socket.id]]);
 		buchu = 0;
 	});
 	socket.on('voice',function(soundname){
@@ -141,6 +148,10 @@ io.on('connection',function(socket){
 		io.emit('beishoupainame',shou2name);//发送供牌username
 		io.emit('shou2jieshoupai',username[socket.id]);
 	});
+	socket.on("chong",function(){
+		chongname = username[socket.id];
+		console.log("chong:"+chongname);
+	});
 	socket.on('disconnect',function(){
 		this.broadcast.emit('system message', username[socket.id] + ' 退出了游戏' );
 		console.log(username[socket.id] + ' has disconnected');
@@ -148,7 +159,6 @@ io.on('connection',function(socket){
 		io.emit('useronline',onlineuser);
 		console.log('online: ' + onlineuser);
 	});
-	 
 });
 
 http.listen(3001,function(){
