@@ -104,7 +104,7 @@ onlineMessages{
 	<div id='player5' style="position:inherit; right:40px;">玩家5</div>
 </div>
 
-<div id="mypaiarea" style="position:absolute; top:650px; left:270px; width:1000px; height:150px;"></div>
+<div id="mypaiarea" style="display:block;position:absolute; top:650px; left:270px; width:1000px; height:150px;"></div>
 
 <div style="position:absolute; top:600px;left:450px;">      
     <input id="danibtn" type="button" style="position:inherit;left:150px; display:none;" value="大你" onClick="daniclick()">
@@ -119,6 +119,7 @@ onlineMessages{
 <input id="btnshou2" type="button" style="position:inherit;left:50px; display:none;" value="收牌" onClick="shou2click()">
     <input id="buchu_quxiaozidongbtn" type="button" style="position:inherit;left:550px; display:none;" value="取消自动不出" onClick="quxiaozidongbuchuclick()">
     <input id="rebeginbtn" type="button" style="position:inherit;left:0px; display:none;" value="重新开始" onClick="rebegingame()">
+    <input id="yincangbtn" type="button" style="position:inherit;left:850px; display:block;" value="隐藏" onClick="yincang()">
     
 </div>
             <ul id="onlineMessages">online</ul>
@@ -430,7 +431,8 @@ document.getElementById("buchubtn").style.display = "none";
 document.getElementById("buchu_zidongbtn").style.display = "none";
 document.getElementById("buchu_quxiaozidongbtn").style.display = "none";
 document.getElementById("rebeginbtn").style.display = "none";
-document.getElementById("btngong2").style.display = "none";
+document.getElementById("btngong2").style.display = "block";
+document.getElementById("btnshou2").style.display = "block";
 document.getElementById("baoarea").innerHTML = "";
 	}
 
@@ -1117,6 +1119,15 @@ document.getElementById("baoarea").innerHTML = "";
 			gengxinpai();
 			chupai = [];
 			chupaiN = 0;
+		}
+	}
+	function yincang(){
+		if(document.getElementById("mypaiarea").style.display == 'block'){
+			document.getElementById("mypaiarea").style.display = 'none';
+			document.getElementById("yincangbtn").value = "取消隐藏"
+		}else{
+			document.getElementById("mypaiarea").style.display = 'block';
+			document.getElementById("yincangbtn").value = "隐藏";
 		}
 	}
    </script>
