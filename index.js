@@ -9,11 +9,9 @@ var userlist = {};
 var id=0;
 var username = new Array();
 var pai = new Array();
-var nextPlayerId = new Array();
-var idgetshunxu = new Array();
-var shunxugetid = new Array();
+var nextPlayername = new Array();
 var renshu = 0;
-var huangshangid = 0;
+var huangshangname = 0;
 var buchu = 0;
 var seat = new Array();
 var onlineuser = [];
@@ -35,14 +33,16 @@ io.on('connection',function(socket){
 	var user = {};
 
 	socket.on('addin', function (usernameInput) {
+		//建立id和username的关系,便于识别是谁发来的消息
 		userId = socket.id
 		username[userId] = usernameInput;
+		//
 		user.socket = socket;
-		userlist[userId] = user;
-		userlist[userId].socket.emit('idInfo',username[userId]);	
-		io.emit('system message',username[userId]+'进入了游戏');
-		console.log('User ' + username[userId] + ' has connected!');
-		onlineuser.push(username[userId]);
+		userlist[usernameInput] = user;
+		userlist[usernameInput].socket.emit('idInfo',usernameInput);	
+		io.emit('system message',usernameInput+'进入了游戏');
+		console.log('User ' + usernameInput + ' has connected!');
+		onlineuser.push(usernameInput);
 		io.emit('useronline',onlineuser);
 		console.log('online: ' + onlineuser);
 	});
@@ -59,7 +59,7 @@ io.on('connection',function(socket){
 	socket.on('bao',function(bao){
 		console.log(bao);
 		io.emit('bao',bao);
-		huangshangid=socket.id;
+		huangshangname = username[socket.id];
 		io.emit('huangshangname',username[socket.id]);
 		socket.broadcast.emit('zhengzaichupai',username[socket.id]);
 		daPai();
@@ -67,7 +67,7 @@ io.on('connection',function(socket){
 	
 	socket.on('send wang',function(){
 		io.emit('bujiaowang',username[socket.id]);
-		userlist[ nextPlayerId[socket.id] ].socket.emit('send wang');
+		userlist[ nextPlayername[ username[socket.id] ] ].socket.emit('send wang');
 	})
 
 	socket.on('chat1 message', function(msg){
@@ -83,8 +83,8 @@ io.on('connection',function(socket){
 		io.emit('chupainame',username[socket.id]);
 		io.emit('jieshoupai',msg);
 		//可以使用nextone函数。可以思考一下
-		userlist[ nextPlayerId[socket.id] ].socket.emit('it is your turn');
-		io.emit('zhengzaichupai',username[nextPlayerId[socket.id]]);
+		userlist[ nextPlayername[ username[socket.id] ] ].socket.emit('it is your turn');
+		io.emit('zhengzaichupai',nextPlayername[ username[socket.id] ]);
 	})
 	socket.on('rebegingame',function(){
 		io.emit('start');
@@ -95,13 +95,13 @@ io.on('connection',function(socket){
 		buchu++;
 		if(buchu == 4){
 			io.emit('clearchupaiarea');
-			userlist[ nextPlayerId[socket.id] ].socket.emit('it is your begin',username[socket.id]);
-			io.emit('zhengzaichupai',username[nextPlayerId[socket.id]]);
+			userlist[ nextPlayername[ username[socket.id] ] ].socket.emit('it is your begin',username[socket.id]);
+			io.emit('zhengzaichupai',nextPlayername[ username[socket.id] ]);
 			buchu = 0;
 		}
 		else{
-			userlist[ nextPlayerId[socket.id] ].socket.emit('it is your turn');
-			io.emit('zhengzaichupai',username[nextPlayerId[socket.id]]);
+			userlist[ nextPlayername[ username[socket.id] ] ].socket.emit('it is your turn');
+			io.emit('zhengzaichupai',nextPlayername[ username[socket.id] ]);
 		}
 	});
 	socket.on('over',function(){
@@ -109,8 +109,8 @@ io.on('connection',function(socket){
 		console.log(username[socket.id]+'is over');
 	});
 	socket.on('nextplayerbegin',function(){
-		userlist[ nextPlayerId[socket.id] ].socket.emit('it is your begin',username[socket.id]);
-		io.emit('zhengzaichupai',username[nextPlayerId[socket.id]]);
+		userlist[ nextPlayername[ username[socket.id] ] ].socket.emit('it is your begin',username[socket.id]);
+		io.emit('zhengzaichupai',nextPlayername[ username[socket.id] ]);
 		buchu = 0;
 	});
 	socket.on('voice',function(soundname){
@@ -170,20 +170,14 @@ function begin(){
 	fenpai();
 	console.log("fenhaole");
 	console.log(pai[1]);
-	i=0;
-	for(everyId in username){
-		i++;
-		idgetshunxu[everyId]=i;
-		shunxugetid[i]=everyId;
-		console.log('shunxu'+idgetshunxu[everyId]);
-		console.log(pai[i]);
-		userlist[everyId].socket.emit('your pai',pai[i]);
+	for(i in seat){
+		userlist[seat[i]].socket.emit('your pai',pai[i]);
+		if(i<seat.length-1){
+			nextPlayername[ seat[i] ] = seat[parseInt(i)+1];//由于这时候i是字符串，所以i+1不是数字相加，所以会出错。
+		}else{
+			nextPlayername[ seat[i] ] = seat[1];
+		}
 	}
-	
-	for(k=1;k<renShu;k++){
-		nextPlayerId[ shunxugetid[k] ] = shunxugetid[k+1];
-	}
-	nextPlayerId[ shunxugetid[renShu] ] = shunxugetid[1];
 }
 
 function fenpai(){
@@ -219,6 +213,6 @@ function fenpai(){
 
 function daPai(){
 	io.emit('system message', '开始打牌' );
-	io.emit('zhengzaichupai', '轮到'+username[huangshangid]+'出牌' );
-	userlist[huangshangid].socket.emit('it is your begin');
+	io.emit('zhengzaichupai', huangshangname);
+	userlist[huangshangname].socket.emit('it is your begin');
 }
